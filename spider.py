@@ -21,7 +21,7 @@ reload(sys)
 outFile = open('questions.csv', 'w')
 sys.setdefaultencoding('utf8')
 
-qFile = open("topic/all_questions", 'r')
+qFile = open("topic/all_questions_id", 'r')
 quList = []
 for line in qFile.readlines():
     id = line[0:8]
@@ -101,17 +101,19 @@ for quId in quList:
         if topic.id == '19664274':
             topicHillary = True
 
-    print(id, title, answer_count, prob_comment_count,
+    '''print(id, title, answer_count, prob_comment_count,
           follower_count, answer_total_voteup,
           answer_total_comment, answer_mean_voteup,
           answer_mean_comment, created_time_str, updated_time_str,
-          popularity, topicTrump, topicElection, topicHillary)
+          popularity, topicTrump, topicElection, topicHillary)'''
 
-
-    outFile.write('"%d", "%s", "%d", "%d", "%d", "%d", "%d", "%lf", "%lf", "%s", "%s", "%d", "%s", "%s", "%s"\n'
+    outFile.write('"%d","%s","%d","%d","%d","%d","%d","%lf","%lf","%s","%s","%d","%s","%s","%s"\n'
                   % (id, title, answer_count, prob_comment_count, follower_count, answer_total_voteup, answer_total_comment,
                      answer_mean_voteup, answer_mean_comment, created_time_str, updated_time_str, popularity, str(topicTrump),
                      str(topicElection), str(topicHillary)))
+
+    tot = tot + 1
+    print('have already visited %d questions' % tot)
 
 outFile.close()
 
