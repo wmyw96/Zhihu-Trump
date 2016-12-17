@@ -1,6 +1,7 @@
 # coding=utf-8
 from __future__ import unicode_literals, print_function
 
+import sys
 import os
 import time
 from zhihu_oauth import ZhihuClient
@@ -16,7 +17,11 @@ else:
     client.login_in_terminal()
     client.save_token(TOKEN_FILE)
 
-qFile = open("topic/all_questions_1", 'r')
+reload(sys)
+outFile = open('questions.csv', 'w')
+sys.setdefaultencoding('utf8')
+
+qFile = open("topic/all_questions", 'r')
 quList = []
 for line in qFile.readlines():
     id = line[0:8]
@@ -27,6 +32,8 @@ quList = list(set(quList))
 print('totally %d questions in 3 topics (after unique)' % len(quList))
 
 limit_time = time.strptime('2016-11-08 23:59:59', '%Y-%m-%d %H:%M:%S')
+
+tot = 0
 
 for quId in quList:
     question = client.question(int(quId))
@@ -56,16 +63,23 @@ for quId in quList:
         answer_total_voteup += answer.voteup_count
         answer_total_comment += answer.comment_count
 
-    # answer_mean_voteup
-    answer_mean_voteup = (answer_total_voteup + 0.0) / answer_count
+    answer_mean_voteup = 0
+    answer_mean_comment = 0
 
-    # answer_mean_comment
-    answer_mean_comment = (answer_total_comment + 0.0) / answer_count
+    if (answer_count > 0):
+        # answer_mean_voteup
+        answer_mean_voteup = (answer_total_voteup + 0.0) / answer_count
+
+        # answer_mean_comment
+        answer_mean_comment = (answer_total_comment + 0.0) / answer_count
 
 
     # created_time
     created_time = time.localtime(question.created_time)
     created_time_str = time.strftime('%Y-%m-%d %H:%M:%S', created_time)
+
+    if created_time > limit_time:
+        continue
 
     # updated_time
     updated_time = time.localtime(question.updated_time)
@@ -88,8 +102,16 @@ for quId in quList:
             topicHillary = True
 
     print(id, title, answer_count, prob_comment_count,
-          follower_count, answer_count, answer_total_voteup,
-          answer_total_comment, created_time_str, updated_time_str,
+          follower_count, answer_total_voteup,
+          answer_total_comment, answer_mean_voteup,
+          answer_mean_comment, created_time_str, updated_time_str,
           popularity, topicTrump, topicElection, topicHillary)
 
-    break
+
+    outFile.write('"%d", "%s", "%d", "%d", "%d", "%d", "%d", "%lf", "%lf", "%s", "%s", "%d", "%s", "%s", "%s"\n'
+                  % (id, title, answer_count, prob_comment_count, follower_count, answer_total_voteup, answer_total_comment,
+                     answer_mean_voteup, answer_mean_comment, created_time_str, updated_time_str, popularity, str(topicTrump),
+                     str(topicElection), str(topicHillary)))
+
+outFile.close()
+
