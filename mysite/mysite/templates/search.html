@@ -1,0 +1,28 @@
+
+<form action="/mysite/search" method="post"> 
+   搜索内容: <input type="text" name="searchText" value = "" >
+  <input type="submit" value="搜索" />
+  <input type = "submit" name = "Previous" value = "上一页">
+  <input type = "submit" name = "Next" value = "下一页"><br/>
+</form>
+{% for contact in contacts %}
+    {# Each "contact" is a Contact model object. #}
+    <!-- <a href = "{{contact.name}}" >+ {{contact.title}} </a> <br /> -->
+    {contact}
+{% endfor %}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if contacts.has_previous %}
+            <a href="?page={{ contacts.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
+        </span>
+
+        {% if contacts.has_next %}
+            <a href="?page={{ contacts.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
