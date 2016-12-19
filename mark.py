@@ -1,5 +1,5 @@
 # coding=utf-8
-from __future__ import unicode_literals, print_function
+#from __future__ import unicode_literals, print_function
 
 import os
 import time
@@ -47,7 +47,7 @@ for quId in quList:
         p_content = qu_br.sub('\n',content)
         p_content = qu_.sub('',p_content)
         content = qu_.sub('',qu_n.sub('',content))
-        print(p_content+'\n\n-----------------------------------------------------------------\n\n')
+        print p_content.encode('GBK', 'ignore')+'\n\n-----------------------------------------------------------------\n\n'
         while True:
             support = raw_input('support whom:(0:none 1:Trump 2:Hillary):')
             who_win = raw_input('who win:(0:none 1:Trump 2:Hillary):')
