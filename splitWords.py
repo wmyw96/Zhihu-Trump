@@ -28,10 +28,10 @@ import jieba
 # 		if (tag == "article" or tag == "title"):
 # 			woshishabi = True
 
-f = open("no_mark_answers.txt","r")
-jieba.load_userdict("userdict.txt")
 totalWords = set()
 wordsMapping = dict()
+f = open("no_mark_answers.txt","r")
+jieba.load_userdict("userdict.txt")
 f.readline()
 for line in f.readlines():
 	words = line.split("\001")
@@ -45,7 +45,22 @@ for line in f.readlines():
 			totalWords.add(seg_list[i])
 			wordsMapping[seg_list[i]] = [words[8][:-1]]
 f.close()
-output = open("fenci.txt","w")
+f = open("no_mark_answers_1000-10000.txt","r")
+jieba.load_userdict("userdict.txt")
+f.readline()
+for line in f.readlines():
+	words = line.split("\001")
+	cutResult = jieba.cut_for_search(words[1])
+	lists = "\001".join(cutResult)
+	seg_list = lists.split("\001")
+	for i in range(0,len(seg_list)):
+		if (seg_list[i] in totalWords):
+			wordsMapping[seg_list[i]].append(words[8][:-1])
+		else:
+			totalWords.add(seg_list[i])
+			wordsMapping[seg_list[i]] = [words[8][:-1]]
+f.close()
+output = open("mysite/fenci.txt","w")
 for words in totalWords:
 	output.write(words + "!@#$%" + "!@#$%".join(wordsMapping[words]) + '\n' + '\001')
 output.close()
